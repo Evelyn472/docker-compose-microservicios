@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+
+  mscurso:
+    build: ./mscurso
+    container_name: mscurso
+    ports:
+      - "8082:8082"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      DB_URL: jdbc:mysql://host.docker.internal:3306/db_curso?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD:
+    depends_on:
+      - eureka-server
+
+  msprofesores:
+    build: ./msprofesores
+    container_name: msprofesores
+    ports:
+      - "8083:8083"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      DB_URL: jdbc:mysql://host.docker.internal:3306/db_profesores?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD:
+    depends_on:
+      - eureka-server
+
+  msasistencia:
+    build: ./msasistencia
+    container_name: msasistencia
+    ports:
+      - "8084:8084"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      DB_URL: jdbc:mysql://host.docker.internal:3306/db_asistencia?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Santiago
+      DB_USERNAME: root
+      DB_PASSWORD:
+    depends_on:
+      - eureka-server
+
+  mshorarios:
+    build: ./mshorarios
+    container_name: mshorarios
+    ports:
+      - "8089:8089"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      DB_URL: jdbc:mysql://host.docker.internal:3306/db_horarios?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Santiago
+      DB_USERNAME: root
+      DB_PASSWORD:
+    depends_on:
+      - eureka-server
+
+  mscomunicaciones:
+    build: ./mscomunicaciones
+    container_name: mscomunicaciones
+    ports:
+      - "8090:8090"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      DB_URL: jdbc:mysql://host.docker.internal:3306/db_comunicaciones?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Santiago
+      DB_USERNAME: root
+      DB_PASSWORD:
+    depends_on:
+      - eureka-server
